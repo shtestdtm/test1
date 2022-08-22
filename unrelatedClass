@@ -1,0 +1,23 @@
+<?php
+
+namespace Safe;
+
+use Safe\Exceptions\FilesystemException;
+
+function file_get_contents(string $filename, bool $use_include_path = false, $context = null, int $offset = 0, int $length = null): string
+{
+    error_clear_last();
+    if ($length !== null) {
+        $result = \file_get_contents($filename, $use_include_path, $context, $offset, $length);
+    } elseif ($offset !== 0) {
+        $result = \file_get_contents($filename, $use_include_path, $context, $offset);
+    } elseif ($context !== null) {
+        $result = \file_get_contents($filename, $use_include_path, $context);
+    } else {
+        $result = \file_get_contents($filename, $use_include_path);
+    }
+    if ($result === false) {
+        throw FilesystemException::createFromPhpError();
+    }
+    return $result;
+}
